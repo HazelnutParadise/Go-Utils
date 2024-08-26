@@ -1,4 +1,4 @@
-package roundutil
+package mathutil
 
 import (
 	"math"
