@@ -2,6 +2,16 @@
 
 `Go-Utils` 是一個集合多個實用工具包的 Go 函式庫，旨在幫助開發者更高效地處理常見的開發任務。
 
+## 設計原則
+
+在 `Go-Utils` 中，所有操作數據結構的函數遵循以下設計原則：
+
+1. **操作會改變數據值的函數會返回新數據結構。**
+   - 例如：`Remove`、`InsertAt`、`Merge` 等函數會返回新的切片或 `map`。
+  
+2. **操作不會改變數據值的函數會直接修改原數據結構。**
+   - 例如：`Sort`、`Reverse` 等函數直接對原數據結構進行操作，而不返回新的副本。
+
 ## 工具包
 
 ### jsonutil
@@ -199,9 +209,53 @@
    - `MergeAddValues`：將兩個值相加（僅適用於數字類型）。
    - `MergeCustomResolver`：使用自訂的 resolver 函數來處理衝突。
 
+8. **RemoveKV(m map[K]V, key K, value V, ignoreErrors ...bool) (map[K]V, error)**  
+   從 `map` 中移除指定的鍵值對並返回新的 `map`。  
+   - **參數：** `m` - 一個 `map`；`key` - 要移除的鍵；`value` - 要移除的值；`ignoreErrors` - 可選，是否忽略錯誤。
+   - **返回值：**
+     - `map[K]V`：移除後的 `map`。
+     - `error`：如果操作過程中出現錯誤，返回錯誤信息。
+
+9. **RemoveByKey(m map[K]V, key K, ignoreErrors ...bool) (map[K]V, error)**  
+   從 `map` 中移除指定的鍵並返回新的 `map`。  
+   - **參數：** `m` - 一個 `map`；`key` - 要移除的鍵；`ignoreErrors` - 可選，是否忽略錯誤。
+   - **返回值：**
+     - `map[K]V`：移除後的 `map`。
+     - `error`：如果操作過程中出現錯誤，返回錯誤信息。
+
+10. **RemoveByValue(m map[K]V, value V, ignoreErrors ...bool) (map[K]V, error)**  
+    從 `map` 中移除具有指定值的所有鍵值對並返回新的 `map`。  
+    - **參數：** `m` - 一個 `map`；`value` - 要移除的值；`ignoreErrors` - 可選，是否忽略錯誤。
+    - **返回值：**
+      - `map[K]V`：移除後的 `map`。
+      - `error`：如果操作過程中出現錯誤，返回錯誤信息。
+
+11. **RemoveByMap(m map[K]V, toRemove map[K]V, ignoreErrors ...bool) (map[K]V, error)**  
+    根據傳入的鍵值對 `map` 刪除 `map` 中的對應鍵值對。  
+    - **參數：** `m` - 一個 `map`；`toRemove` - 包含要移除的鍵值對的 `map`；`ignoreErrors` - 可選，是否忽略錯誤。
+    - **返回值：**
+      - `map[K]V`：移除後的 `map`。
+      - `error`：如果操作過程中出現錯誤，返回錯誤信息。
+
+12. **RemoveByKeys(m map[K]V, keys []K, ignoreErrors ...bool) (map[K]V, error)**  
+    從 `map` 中移除所有指定鍵並返回新的 `map`。  
+    - **參數：** `m` - 一個 `map`；`keys` - 包含要移除的鍵的切片；`ignoreErrors` - 可選，是否忽略錯誤。
+    - **返回值：**
+      - `map[K]V`：移除後的 `map`。
+      - `error`：如果操作過程中出現錯誤，返回錯誤信息。
+
+13. **RemoveByValues(m map[K]V, values []V, ignoreErrors ...bool) (map[K]V, error)**  
+    從 `map` 中移除所有具有指定值的鍵值對並返回新的 `map`。  
+    - **參數：** `m` - 一個 `map`；`values` - 包含要移除的值的切片；`ignoreErrors` - 可選，是否忽略錯誤。
+    - **返回值：**
+      - `map[K]V`：移除後的 `map`。
+      - `error`：如果操作過程中出現錯誤，返回錯誤信息。
+
 ## 安裝
 
-您可以使用以下命令來安裝 `Go-Utils`：
+您可以使用以下命令來安裝
+
+ `Go-Utils`：
 
 ```bash
 go get -u github.com/HazelnutParadise/Go-Utils
