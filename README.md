@@ -117,62 +117,69 @@
      - `float64`：切片的算術平均值。
      - `error`：如果切片為空，返回錯誤信息。
 
-4. **Sort(slice []T, ascending ...bool) error**  
+4. **Sum(slice []T) (T, error)**  
+   計算數字切片中所有元素的總和。  
+   - **參數：** `slice` - 一個數字類型的切片。
+   - **返回值：**
+     - `T`：切片中所有元素的總和。
+     - `error`：如果切片為空，返回錯誤信息。
+
+5. **Sort(slice []T, ascending ...bool) error**  
    對數字切片進行排序，根據 `ascending` 參數決定升序或降序，默認為升序。此函數會直接修改傳入的切片，而不返回新的副本。  
    - **參數：** `slice` - 一個數字類型的切片；`ascending` - 一個可選的布林值，默認為 `true`（升序）。
    - **返回值：**
      - `error`：如果傳入多個布林值，返回錯誤信息。
 
-5. **Unique(slice []T) []T**  
+6. **Unique(slice []T) []T**  
    去除切片中的重複元素，適用於所有類型。  
    - **參數：** `slice` - 一個可比較類型的切片。
    - **返回值：**
      - `[]T`：去重後的切片。
 
-6. **Reverse(slice []T)**  
+7. **Reverse(slice []T)**  
    反轉切片中的元素順序。  
    - **參數：** `slice` - 一個任意類型的切片。
    - **返回值：** 無返回值，原地反轉。
 
-7. **FindFirst(slice []T, target T) int**  
+8. **FindFirst(slice []T, target T) int**  
    查找第一個匹配的元素，返回其索引，未找到則返回 `-1`。  
    - **參數：** `slice` - 一個可比較類型的切片；`target` - 要查找的目標值。
    - **返回值：**
      - `int`：首次匹配的索引，未找到返回 `-1`。
 
-8. **FindAll(slice []T, target T) []int**  
+9. **FindAll(slice []T, target T) []int**  
    查找所有匹配的元素，返回其索引切片，未找到則返回空切片。  
    - **參數：** `slice` - 一個可比較類型的切片；`target` - 要查找的目標值。
    - **返回值：**
      - `[]int`：所有匹配元素的索引切片。
 
-9. **Contains(slice []T, target T) bool**  
+10. **Contains(slice []T, target T) bool**  
    檢查切片中是否包含特定元素。  
-   - **參數：** `slice` - 一個可比較類型的切片；`target` - 要查找的目標值。
-   - **返回值：**
-     - `bool`：如果找到目標值，返回 `true`，否則返回 `false`。
+   - **參數：** `slice` - 一個可比較類型的切片；`target` - 要查找的目標值。  
+   - **返回值：**  
+     - `bool`：如果找到目標值，返回 `true`，否則返回 `false`。  
 
-10. **InsertAt(slice []T, index int, values ...T) ([]T, error)**  
+11. **InsertAt(slice []T, index int, values ...T) ([]T, error)**  
     在指定位置插入元素，支持負索引。  
     - **參數：** `slice` - 一個任意類型的切片；`index` - 插入的位置，支持負索引；`values` - 要插入的值。
     - **返回值：**
       - `[]T`：插入後的切片。
       - `error`：如果索引無效，返回錯誤信息。
 
-11. **Remove(slice []T, index int) ([]T, error)**  
+12. **Remove(slice []T, index int) ([]T, error)**  
     移除指定索引處的元素，支持負索引。  
     - **參數：** `slice` - 一個任意類型的切片；`index` - 要移除的位置，支持負索引。
     - **返回值：**
       - `[]T`：移除後的切片。
       - `error`：如果索引無效，返回錯誤信息。
 
-12. **RemoveAll(slice []T, target T) []T**  
+13. **RemoveAll(slice []T, target T) []T**  
     移除切片中所有匹配目標的元素。  
     - **參數：** `slice` - 一個可比較類型的切片；`target` - 要移除的目標值。
     - **返回值：**
       - `[]T`：移除後的切片。
 
-13. **Flatten(input interface{}) ([]T, error)**  
+14. **Flatten(input interface{}) ([]T, error)**  
     將多層嵌套的切片展平成單層切片。  
     - **參數：** `input` - 可能包含多層嵌套的任意類型切片。
     - **返回值：**
@@ -256,7 +263,9 @@
 
 9. **RemoveByKey(m map[K]V, key K, ignoreErrors ...bool) (map[K]V, error)**  
    從 `map` 中移除指定的鍵並返回新的 `map`。  
-   - **參數：** `m` - 一個 `map`；`key` - 要移除的鍵；`ignoreErrors` - 可選，是否忽略錯誤。
+   - **參數：** `m` - 一個 `map`；`key` - 要移除的鍵；`ignoreErrors` - 可選，是否忽略錯誤
+
+。
    - **返回值：**
      - `map[K]V`：移除後的 `map`。
      - `error`：如果操作過程中出現錯誤，返回錯誤信息。
@@ -291,9 +300,7 @@
 
 ## 安裝
 
-您可以使用以下命令來安裝
-
- `Go-Utils`：
+您可以使用以下命令來安裝 `Go-Utils`：
 
 ```bash
 go get -u github.com/HazelnutParadise/Go-Utils

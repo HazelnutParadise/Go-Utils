@@ -50,6 +50,19 @@ func Average[T types.Numeric](slice []T) (float64, error) {
 	return sum / float64(len(slice)), nil
 }
 
+// Sum 函數，計算數字切片中所有元素的總和
+func Sum[T types.Numeric](slice []T) (T, error) {
+	if len(slice) == 0 {
+		var zero T
+		return zero, errors.New("slice is empty")
+	}
+	var sum T
+	for _, v := range slice {
+		sum += v
+	}
+	return sum, nil
+}
+
 // Sort 函數，對數字切片排序，根據 ascending 參數決定升序或降序，默認為升序
 func Sort[T types.Numeric](slice []T, ascending ...bool) error {
 	if len(ascending) > 1 {
