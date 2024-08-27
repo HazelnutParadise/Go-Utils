@@ -131,6 +131,57 @@
       - `[]T`：展平後的單層切片。
       - `error`：如果遇到無法處理的類型，返回錯誤信息。
 
+### maputil
+
+`maputil` 專注於處理和操作 `map` 數據結構，提供了各種實用函數來簡化 `map` 的操作和管理。
+
+**功能：**
+
+1. **Keys(m map[K]V) []K**  
+   返回 `map` 中的所有鍵。  
+   - **參數：** `m` - 一個 `map`。
+   - **返回值：**
+     - `[]K`：包含所有鍵的切片。
+
+2. **Values(m map[K]V) []V**  
+   返回 `map` 中的所有值。  
+   - **參數：** `m` - 一個 `map`。
+   - **返回值：**
+     - `[]V`：包含所有值的切片。
+
+3. **Invert(m map[K]V) map[V]K**  
+   反轉 `map` 的鍵和值的位置。  
+   - **參數：** `m` - 一個 `map`。
+   - **返回值：**
+     - `map[V]K`：反轉後的新 `map`。
+
+4. **FilterByKey(m map[K]V, condition FilterCondition, target K) (map[K]V, error)**  
+   根據鍵來篩選 `map` 中的鍵值對。  
+   - **參數：** `m` - 一個 `map`；`condition` - 篩選條件；`target` - 要比較的目標鍵。
+   - **返回值：**
+     - `map[K]V`：篩選後的 `map`。
+     - `error`：如果篩選過程中出現錯誤，返回錯誤信息。
+
+5. **FilterByValue(m map[K]V, condition FilterCondition, target V) (map[K]V, error)**  
+   根據值來篩選 `map` 中的鍵值對。  
+   - **參數：** `m` - 一個 `map`；`condition` - 篩選條件；`target` - 要比較的目標值。
+   - **返回值：**
+     - `map[K]V`：篩選後的 `map`。
+     - `error`：如果篩選過程中出現錯誤，返回錯誤信息。
+
+6. **CustomFilter(m map[K]V, filterFunc func(K, V) bool) map[K]V**  
+   使用自訂的篩選函數來篩選 `map` 中的鍵值對。  
+   - **參數：** `m` - 一個 `map`；`filterFunc` - 自訂的篩選函數。
+   - **返回值：**
+     - `map[K]V`：篩選後的 `map`。
+
+7. **Merge(m1, m2 map[K]V, opts ...interface{}) (map[K]V, error)**  
+   合併兩個 `map`，在鍵衝突時根據指定的策略處理。當不傳入策略時，默認使用 `MergeDefault` 策略。  
+   - **參數：** `m1` - 第一個 `map`；`m2` - 第二個 `map`；`opts` - 可選的合併策略或自訂的 resolver 函數。
+   - **返回值：**
+     - `map[K]V`：合併後的 `map`。
+     - `error`：如果合併過程中出現錯誤，返回錯誤信息。
+
 ## 安裝
 
 您可以使用以下命令來安裝 `Go-Utils`：
@@ -150,6 +201,7 @@ import (
     "github.com/HazelnutParadise/Go-Utils/jsonutil"
     "github.com/HazelnutParadise/Go-Utils/mathutil"
     "github.com/HazelnutParadise/Go-Utils/sliceutil"
+    "github.com/HazelnutParadise/Go-Utils/maputil"
 )
 
 func main() {
@@ -165,6 +217,10 @@ func main() {
     nums := []int{3, 1, 4, 1, 5, 9, 2}
     maxVal, _ := sliceutil.Max(nums)
     fmt.Println("Max:", maxVal) // 輸出: 9
+
+    myMap := map[string]int{"a": 1, "b": 2, "c": 3}
+    invertedMap := maputil.Invert(myMap)
+    fmt.Println("Inverted Map:", invertedMap) // 輸出: map[1:a 2:b 3:c]
 }
 ```
 

@@ -4,17 +4,12 @@ package sliceutil
 import (
 	"errors"
 	"sort"
+
+	"github.com/HazelnutParadise/Go-Utils/types"
 )
 
-// 定義一個泛型約束，涵蓋所有數字類型
-type Numeric interface {
-	int | int8 | int16 | int32 | int64 |
-		uint | uint8 | uint16 | uint32 | uint64 |
-		float32 | float64
-}
-
 // Max 函數，返回切片中的最大值
-func Max[T Numeric](slice []T) (T, error) {
+func Max[T types.Numeric](slice []T) (T, error) {
 	if len(slice) == 0 {
 		var zero T
 		return zero, errors.New("slice is empty")
@@ -29,7 +24,7 @@ func Max[T Numeric](slice []T) (T, error) {
 }
 
 // Min 函數，返回切片中的最小值
-func Min[T Numeric](slice []T) (T, error) {
+func Min[T types.Numeric](slice []T) (T, error) {
 	if len(slice) == 0 {
 		var zero T
 		return zero, errors.New("slice is empty")
@@ -44,7 +39,7 @@ func Min[T Numeric](slice []T) (T, error) {
 }
 
 // Average 函數，計算算術平均值
-func Average[T Numeric](slice []T) (float64, error) {
+func Average[T types.Numeric](slice []T) (float64, error) {
 	if len(slice) == 0 {
 		return 0, errors.New("slice is empty")
 	}
@@ -56,7 +51,7 @@ func Average[T Numeric](slice []T) (float64, error) {
 }
 
 // Sort 函數，對數字切片排序，根據 ascending 參數決定升序或降序，默認為升序
-func Sort[T Numeric](slice []T, ascending ...bool) error {
+func Sort[T types.Numeric](slice []T, ascending ...bool) error {
 	if len(ascending) > 1 {
 		return errors.New("the Sort function allows only one boolean value for the ascending parameter")
 	}
