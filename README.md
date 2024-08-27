@@ -41,7 +41,7 @@
 4. **ParseBool(value interface{}) bool**  
    將任意資料轉換為 `bool`，如果轉換失敗，則會 `panic`。  
    - **參數：** `value` - 任意可轉換為 `bool` 的資料。可以接受的值包括：
-     - 字串 `"true"`, `"false"`, `"1"`, `"0"`, `"yes"`, `"no"`, `"on"`, `"off"` 等。
+     - 字串 `"true"`, `"false"`, `"1"`, `"0"`, `"yes"`, `"no"`, `"on"`, `"off"`, `空字串` 等。
      - 任意數字類型，非零數字轉換為 `true`，零轉換為 `false`。
    - **返回值：**
      - `bool`：轉換後的 `bool` 值。
