@@ -105,7 +105,7 @@ func ParseBool(value interface{}) bool {
 		trimmed := strings.TrimSpace(strings.ToLower(v))
 		if trimmed == "true" || trimmed == "1" || trimmed == "yes" || trimmed == "on" {
 			return true
-		} else if trimmed == "false" || trimmed == "0" || trimmed == "no" || trimmed == "off" {
+		} else if trimmed == "" || trimmed == "false" || trimmed == "0" || trimmed == "no" || trimmed == "off" {
 			return false
 		}
 		num, err := strconv.ParseFloat(trimmed, 64)
