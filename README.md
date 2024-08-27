@@ -169,6 +169,16 @@
      - `map[K]V`：篩選後的 `map`。
      - `error`：如果篩選過程中出現錯誤，返回錯誤信息。
 
+   **比較模式（FilterCondition）：**
+   - `FilterEqualTo`：篩選等於目標值的鍵值對。
+   - `FilterNotEqualTo`：篩選不等於目標值的鍵值對。
+   - `FilterGreaterThan`：篩選大於目標值的鍵值對（僅適用於數字類型）。
+   - `FilterLessThan`：篩選小於目標值的鍵值對（僅適用於數字類型）。
+   - `FilterGreaterThanOrEqualTo`：篩選大於或等於目標值的鍵值對（僅適用於數字類型）。
+   - `FilterLessThanOrEqualTo`：篩選小於或等於目標值的鍵值對（僅適用於數字類型）。
+   - `FilterContains`：篩選包含目標值的字串鍵值對（僅適用於字串類型）。
+   - `FilterNotContains`：篩選不包含目標值的字串鍵值對（僅適用於字串類型）。
+
 6. **CustomFilter(m map[K]V, filterFunc func(K, V) bool) map[K]V**  
    使用自訂的篩選函數來篩選 `map` 中的鍵值對。  
    - **參數：** `m` - 一個 `map`；`filterFunc` - 自訂的篩選函數。
@@ -181,6 +191,13 @@
    - **返回值：**
      - `map[K]V`：合併後的 `map`。
      - `error`：如果合併過程中出現錯誤，返回錯誤信息。
+
+   **合併策略（MergeConflictResolutionStrategy）：**
+   - `MergeDefault`：遇到衝突時返回錯誤。
+   - `MergeUseFirst`：使用第一個 `map` 的值。
+   - `MergeUseSecond`：使用第二個 `map` 的值。
+   - `MergeAddValues`：將兩個值相加（僅適用於數字類型）。
+   - `MergeCustomResolver`：使用自訂的 resolver 函數來處理衝突。
 
 ## 安裝
 
