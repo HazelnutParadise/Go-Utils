@@ -14,6 +14,44 @@
 
 ## 工具包
 
+### conv
+
+`conv` 包提供了一組簡單而強大的函數，用於將各種資料類型轉換為常用的 Go 基本類型。所有函數在轉換失敗時會直接 `panic`，確保操作的可靠性和一致性。
+
+**功能：**
+
+1. **ParseF64(value interface{}) float64**  
+   將任意資料轉換為 `float64`，如果轉換失敗，則會 `panic`。  
+   - **參數：** `value` - 任意可轉換為 `float64` 的資料。
+   - **返回值：**
+     - `float64`：轉換後的 `float64` 值。
+
+2. **ParseF32(value interface{}) float32**  
+   將任意資料轉換為 `float32`，如果轉換失敗，則會 `panic`。  
+   - **參數：** `value` - 任意可轉換為 `float32` 的資料。
+   - **返回值：**
+     - `float32`：轉換後的 `float32` 值。
+
+3. **ParseInt(value interface{}) int**  
+   將任意資料轉換為 `int`，如果轉換失敗，則會 `panic`。  
+   - **參數：** `value` - 任意可轉換為 `int` 的資料。
+   - **返回值：**
+     - `int`：轉換後的 `int` 值。
+
+4. **ParseBool(value interface{}) bool**  
+   將任意資料轉換為 `bool`，如果轉換失敗，則會 `panic`。  
+   - **參數：** `value` - 任意可轉換為 `bool` 的資料。可以接受的值包括：
+     - 字串 `"true"`, `"false"`, `"1"`, `"0"`, `"yes"`, `"no"`, `"on"`, `"off"` 等。
+     - 任意數字類型，非零數字轉換為 `true`，零轉換為 `false`。
+   - **返回值：**
+     - `bool`：轉換後的 `bool` 值。
+
+5. **ToString(value interface{}) string**  
+   將任意資料轉換為字串，使用 `fmt.Sprintf` 進行格式化，錯誤時直接 `panic`。  
+   - **參數：** `value` - 任意可轉換為字串的資料。
+   - **返回值：**
+     - `string`：轉換後的字串。
+
 ### jsonutil
 
 `jsonutil` 專門用於處理 JSON 文件。它提供了讀取 JSON 文件並解析為 `map[string]interface{}` 的功能，以及根據指定鍵路徑提取子 `map` 的功能。適合用於讀取 `config.json` 設定檔。
