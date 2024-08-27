@@ -263,9 +263,7 @@
 
 9. **RemoveByKey(m map[K]V, key K, ignoreErrors ...bool) (map[K]V, error)**  
    從 `map` 中移除指定的鍵並返回新的 `map`。  
-   - **參數：** `m` - 一個 `map`；`key` - 要移除的鍵；`ignoreErrors` - 可選，是否忽略錯誤
-
-。
+   - **參數：** `m` - 一個 `map`；`key` - 要移除的鍵；`ignoreErrors` - 可選，是否忽略錯誤。
    - **返回值：**
      - `map[K]V`：移除後的 `map`。
      - `error`：如果操作過程中出現錯誤，返回錯誤信息。
