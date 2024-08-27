@@ -6,7 +6,7 @@
 
 ### jsonutil
 
-`jsonutil` 是 `Go-Utils` 中的一個工具包，專門用於處理 JSON 文件。它提供了讀取 JSON 文件並解析為 `map[string]interface{}` 的功能，以及根據指定鍵路徑提取子 `map` 的功能。適合用於讀取 `config.json` 設定檔。
+`jsonutil` 專門用於處理 JSON 文件。它提供了讀取 JSON 文件並解析為 `map[string]interface{}` 的功能，以及根據指定鍵路徑提取子 `map` 的功能。適合用於讀取 `config.json` 設定檔。
 
 **功能：**
 
@@ -26,7 +26,7 @@
 
 ### mathutil
 
-`mathutil` 是 `Go-Utils` 中的一個工具包，提供了與數學運算相關的實用函數，例如適用於浮點數的四捨五入處理。
+`mathutil` 提供了與數學運算相關的實用函數，例如適用於浮點數的四捨五入處理。
 
 **功能：**
 
@@ -44,7 +44,7 @@
 
 ### sliceutil
 
-`sliceutil` 是 `Go-Utils` 中的一個工具包，專注於處理和操作切片數據結構。提供了針對數字切片和通用切片的多種實用函數。
+`sliceutil` 專注於處理和操作切片數據結構。提供了針對數字切片和通用切片的多種實用函數。
 
 **功能：**
 
