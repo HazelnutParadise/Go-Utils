@@ -1,9 +1,10 @@
 package mathutil
 
 import (
-	"math"
+	"strings"
 
-	"github.com/HazelnutParadise/Go-Utils/types" // 假設有一個定義 Numeric 類型約束的包
+	"github.com/HazelnutParadise/Go-Utils/conv"
+	"github.com/HazelnutParadise/Go-Utils/types"
 )
 
 // SplitFloatMode 定義枚舉類型，用於指定 SplitFloat 的返回模式
@@ -28,17 +29,44 @@ func SplitFloat[T types.Numeric](value T, mode ...SplitFloatMode) (interface{}, 
 
 	// 將 value 轉換為 float64 以進行數學計算
 	floatValue := float64(value)
-	intPart := math.Floor(floatValue)
-	fracPart := floatValue - intPart
+	// 使用 ToString 函數將 float64 的小數部分轉換為字串
+	floatValueStr := conv.ToString(floatValue)
+	// 使用 Split 函數將整數部分和小數部分分開
+	strs := strings.Split(floatValueStr, ".")
+	intPartStr := strs[0]
+	fracPartStr := ""
+	if len(strs) == 2 {
+		fracPartStr = strs[1]
+	} else {
+		fracPartStr = "0"
+	}
+	// 去掉小數部分尾隨的0
+	fracPartStr = strings.TrimRight(fracPartStr, "0")
+	if fracPartStr == "" {
+		fracPartStr = "0"
+	}
 
 	switch selectedMode {
 	case SplitFloat_IntInt:
-		return int(intPart), int(fracPart * 1000) // 將小數部分放大後取整
+
+		// 使用 ParseInt 函數將整數部分和小數部分轉換為整數
+		intPart := conv.ParseInt(intPartStr)
+		fracPart := conv.ParseInt(fracPartStr)
+		return intPart, fracPart
 	case SplitFloat_FloatFloat:
+		// 使用 ParseFloat 函數將整數部分和小數部分轉換為浮點數
+		intPart := conv.ParseF64(intPartStr)
+		fracPartStr = "0." + fracPartStr
+		fracPart := conv.ParseF64(fracPartStr)
 		return intPart, fracPart
 	case SplitFloat_IntFloat:
 		fallthrough
 	default:
-		return int(intPart), fracPart
+		// 使用 ParseInt 函數將整數部分轉換為整數
+		intPart := conv.ParseInt(intPartStr)
+		// 使用 ParseF64 函數將小數部分轉換為浮點數
+		fracPartStr = "0." + fracPartStr
+		fracPart := conv.ParseF64(fracPartStr)
+		return intPart, fracPart
 	}
 }
