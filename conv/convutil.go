@@ -8,6 +8,12 @@ import (
 
 // ParseF64 將任意資料轉換為 float64，錯誤時直接 panic
 func ParseF64(value interface{}) float64 {
+	// 自動斷言
+	vNew, ok := value.(float64)
+	if ok {
+		return vNew
+	}
+
 	switch v := value.(type) {
 	case int:
 		return float64(v)
@@ -47,11 +53,23 @@ func ParseF64(value interface{}) float64 {
 
 // ParseF32 將任意資料轉換為 float32，錯誤時直接 panic
 func ParseF32(value interface{}) float32 {
+	// 自動斷言
+	vNew, ok := value.(float32)
+	if ok {
+		return vNew
+	}
+
 	return float32(ParseF64(value))
 }
 
 // ParseInt 將任意資料轉換為 int，錯誤時直接 panic
 func ParseInt(value interface{}) int {
+	// 自動斷言
+	vNew, ok := value.(int)
+	if ok {
+		return vNew
+	}
+
 	switch v := value.(type) {
 	case int:
 		return v
@@ -98,6 +116,12 @@ func ParseInt(value interface{}) int {
 
 // ParseBool 將任意資料轉換為 bool，錯誤時直接 panic
 func ParseBool(value interface{}) bool {
+	// 自動斷言
+	vNew, ok := value.(bool)
+	if ok {
+		return vNew
+	}
+
 	switch v := value.(type) {
 	case bool:
 		return v
@@ -128,5 +152,11 @@ func ParseBool(value interface{}) bool {
 
 // ToString 將任意資料轉換為字串，錯誤時直接 panic
 func ToString(value interface{}) string {
+	// 自動斷言
+	vNew, ok := value.(string)
+	if ok {
+		return vNew
+	}
+
 	return fmt.Sprintf("%v", value)
 }
