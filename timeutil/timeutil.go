@@ -2,6 +2,7 @@ package timeutil
 
 import (
 	"fmt"
+	"math"
 	"time"
 )
 
@@ -44,8 +45,13 @@ func FormatTime(t time.Time, format string) string {
 	return t.Format(format)
 }
 
-// DaysBetween 函數，計算兩個日期之間的天數
+// DaysBetween 函數，計算兩個日期之間的天數，返回值為正數
 func DaysBetween(startDate, endDate time.Time) int {
+	return int(math.Abs(float64(DaysDiff(startDate, endDate))))
+}
+
+// DaysDiff 函數，計算兩個日期之間的天數，不取絕對值
+func DaysDiff(startDate, endDate time.Time) int {
 	// 忽略時間部分，只考慮日期
 	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
 	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 0, 0, 0, 0, endDate.Location())
@@ -55,4 +61,49 @@ func DaysBetween(startDate, endDate time.Time) int {
 
 	// 將時間差轉換為天數
 	return int(duration.Hours() / 24)
+}
+
+// MonthsBetween 函數，計算兩個日期之間的月份數，返回值為正數
+func MonthsBetween(startDate, endDate time.Time) int {
+	return int(math.Abs(float64(MonthsDiff(startDate, endDate))))
+}
+
+// MonthsDiff 函數，計算兩個日期之間的月份數，不取絕對值
+func MonthsDiff(startDate, endDate time.Time) int {
+	// 將日期格式化為 "YYYY-MM" 的字串
+	date1 := FormatTime(startDate, "2006-01")
+	date2 := FormatTime(endDate, "2006-01")
+
+	// 將字串拆分成年和月
+	var year1, month1 int
+	var year2, month2 int
+
+	fmt.Sscanf(date1, "%d-%d", &year1, &month1)
+	fmt.Sscanf(date2, "%d-%d", &year2, &month2)
+
+	// 計算年和月的差異
+	yearDiff := year2 - year1
+	monthDiff := month2 - month1
+
+	// 計算總月數
+	totalMonths := yearDiff*12 + monthDiff
+
+	return totalMonths
+}
+
+// YearsBetween 函數，計算兩個日期之間的年數，返回值為正數
+func YearsBetween(startDate, endDate time.Time) int {
+	return int(math.Abs(float64(YearsDiff(startDate, endDate))))
+}
+
+// YearsDiff 函數，計算兩個日期之間的年數，不取絕對值
+func YearsDiff(startDate, endDate time.Time) int {
+	// 將日期格式化為 "YYYY" 的字串
+	year1 := startDate.Year()
+	year2 := endDate.Year()
+
+	// 計算年的差異
+	yearDiff := year2 - year1
+
+	return yearDiff
 }
