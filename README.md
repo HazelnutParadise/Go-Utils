@@ -52,6 +52,20 @@
    - **返回值：**
      - `string`：轉換後的字串。
 
+### errutil
+
+`errutil` 包含一組處理錯誤的實用函數，旨在幫助開發者簡化錯誤處理流程，提高代碼的可讀性和可維護性。
+
+**功能：**
+
+1. **PanicOnErr(fn interface{}, args ...interface{}) []interface{}**  
+   調用任意函數並自動處理返回的錯誤。如果該函數返回 `error`，且該 `error` 不為 `nil`，則 `PanicOnErr` 會觸發 `panic`，否則返回該函數的其他返回值。  
+   - **參數：**  
+     - `fn` - 需要調用的任意函數。
+     - `args` - 傳遞給 `fn` 的參數列表。
+   - **返回值：**  
+     - `[]interface{}`：返回函數 `fn` 的所有非 `error` 返回值，包在一個切片裡。
+
 ### jsonutil
 
 `jsonutil` 專門用於處理 JSON 文件。它提供了讀取 JSON 文件並解析為 `map[string]interface{}` 的功能，以及根據指定鍵路徑提取子 `map` 的功能。適合用於讀取 `config.json` 設定檔。
