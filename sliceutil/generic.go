@@ -74,20 +74,35 @@ func Remove[T any](slice []T, index int) ([]T, error) {
 		index = len(slice) + index
 	}
 	if index < 0 || index >= len(slice) {
-		return slice, errors.New("index out of bounds")
+		return nil, errors.New("index out of bounds")
 	}
-	return append(slice[:index], slice[index+1:]...), nil
+
+	// 創建一個新的切片來存放移除元素後的結果
+	newSlice := make([]T, len(slice)-1)
+	copy(newSlice, slice[:index])
+	copy(newSlice[index:], slice[index+1:])
+
+	return newSlice, nil
 }
 
-// RemoveAll 函數，移除切片中所有等於 target 的元素
-func RemoveAll[T comparable](slice []T, target T) []T {
-	result := slice[:0] // 保留原切片的容量
+// RemoveAll 函數，移除切片中所有等於任何一個 target 的元素
+func RemoveAll[T comparable](slice []T, targets ...T) []T {
+	// 創建一個新的切片來存放移除元素後的結果
+	newSlice := make([]T, 0, len(slice)) // 預留原始切片的容量
+
+	// 將所有 target 放入一個 map 中，方便快速查找
+	targetMap := make(map[T]struct{}, len(targets))
+	for _, target := range targets {
+		targetMap[target] = struct{}{}
+	}
+
 	for _, v := range slice {
-		if v != target {
-			result = append(result, v)
+		if _, found := targetMap[v]; !found {
+			newSlice = append(newSlice, v)
 		}
 	}
-	return result
+
+	return newSlice
 }
 
 // Flatten 函數，將多層嵌套的切片展平成單層切片
