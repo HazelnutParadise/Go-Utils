@@ -329,41 +329,81 @@
 
 ### timeutil
 
-`timeutil` 包提供了一組與時間處理相關的實用函數，簡化了常見時間操作的實現。
+`timeutil` 提供了與時間相關的實用函數，涵蓋時間格式化、時區轉換以及日期計算等常見操作。
 
 **功能：**
 
 1. **TimeInZone(offsetHours int) time.Time**  
-   接受一個 UTC 偏移值，返回該時區的當下時間。  
-   - **參數：** `offsetHours` - UTC 偏移值，以小時為單位（例如 +8 表示 UTC+8）。
-   - **返回值：**  
-     - `time.Time`：返回對應時區的當下時間。
+   根據指定的 UTC 偏移值返回該時區的當前時間。  
+   - **參數：** `offsetHours` - UTC 的偏移值，以小時為單位，正數代表東部時區，負數代表西部時區。
+   - **返回值：**
+     - `time.Time`：該時區的當前時間。
 
 2. **NowFormatted(format string, timezoneOffset ...int) string**  
-   根據指定格式返回當前時間的字串表示，預設使用 UTC+0。  
+   根據指定的格式和時區偏移量返回當前時間的字串表示，預設使用 UTC+0。如果提供了多個時區偏移值，將會 `panic`。  
    - **參數：**  
-     - `format` - 時間格式的字串（例如 `FormatDateOnly`、`FormatDateTime` 等）。  
-     - `timezoneOffset` - （可選）時區偏移值，預設為 UTC+0。  
-   - **返回值：**  
-     - `string`：返回格式化後的當前時間字串。
+     - `format` - 時間格式字串，例如 `"2006-01-02 15:04:05"`。  
+     - `timezoneOffset` - 可選參數，UTC 的偏移值，以小時為單位，預設為 UTC+0。
+   - **返回值：**
+     - `string`：格式化後的當前時間字串。
 
 3. **FormatTime(t time.Time, format string) string**  
-   格式化指定的時間，返回指定格式的字串。  
+   將指定的時間根據指定的格式進行格式化。  
    - **參數：**  
-     - `t` - 要格式化的 `time.Time` 對象。  
-     - `format` - 時間格式的字串。  
-   - **返回值：**  
-     - `string`：返回格式化後的時間字串。
+     - `t` - 要格式化的時間。  
+     - `format` - 時間格式字串，例如 `"2006-01-02 15:04:05"`。
+   - **返回值：**
+     - `string`：格式化後的時間字串。
 
 4. **DaysBetween(startDate, endDate time.Time) int**  
-   計算兩個日期之間的天數，忽略時間部分。  
+   計算兩個日期之間的天數，返回正數。  
    - **參數：**  
-     - `startDate` - 起始日期的 `time.Time` 對象。  
-     - `endDate` - 結束日期的 `time.Time` 對象。  
-   - **返回值：**  
-     - `int`：返回兩個日期之間的天數。
+     - `startDate` - 起始日期。  
+     - `endDate` - 結束日期。
+   - **返回值：**
+     - `int`：兩個日期之間的天數。
 
-**常用時間格式：**
+5. **DaysDiff(startDate, endDate time.Time) int**  
+   計算兩個日期之間的天數，不取絕對值。  
+   - **參數：**  
+     - `startDate` - 起始日期。  
+     - `endDate` - 結束日期。
+   - **返回值：**
+     - `int`：兩個日期之間的天數。
+
+6. **MonthsBetween(startDate, endDate time.Time) int**  
+   計算兩個日期之間的月份數，返回正數。  
+   - **參數：**  
+     - `startDate` - 起始日期。  
+     - `endDate` - 結束日期。
+   - **返回值：**
+     - `int`：兩個日期之間的月份數。
+
+7. **MonthsDiff(startDate, endDate time.Time) int**  
+   計算兩個日期之間的月份數，不取絕對值。  
+   - **參數：**  
+     - `startDate` - 起始日期。  
+     - `endDate` - 結束日期。
+   - **返回值：**
+     - `int`：兩個日期之間的月份數。
+
+8. **YearsBetween(startDate, endDate time.Time) int**  
+   計算兩個日期之間的年數，返回正數。  
+   - **參數：**  
+     - `startDate` - 起始日期。  
+     - `endDate` - 結束日期。
+   - **返回值：**
+     - `int`：兩個日期之間的年數。
+
+9. **YearsDiff(startDate, endDate time.Time) int**  
+   計算兩個日期之間的年數，不取絕對值。  
+   - **參數：**  
+     - `startDate` - 起始日期。  
+     - `endDate` - 結束日期。
+   - **返回值：**
+     - `int`：兩個日期之間的年數。
+
+**常用時間格式（可代替格式字串）：**
 
 - `FormatDateOnly`: `"2006-01-02"` - 只顯示日期。
 - `FormatTimeOnly`: `"15:04:05"` - 只顯示時間。
