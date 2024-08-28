@@ -184,7 +184,7 @@
       - `[]T`：移除後的切片。
       - `error`：如果索引無效，返回錯誤信息。
 
-13. **RemoveAll[T comparable](slice []T, targets ...T) []T**
+13. **RemoveAll[T comparable](slice []T, targets ...T) []T**  
     移除切片中所有匹配目標的元素。  
     - **參數：** `slice` - 一個可比較類型的切片；`target` - 要移除的目標值（可以多個）。
     - **返回值：**
