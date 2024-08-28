@@ -2,6 +2,11 @@ package errutil
 
 import "reflect"
 
+// PanicOnErr 用於處理函數調用時的錯誤，如果函數返回的錯誤不為 nil，則直接 panic
+// fn: 要調用的函數
+// args: 要傳遞給函數的參數
+// 返回值: 函數的返回值切片
+// 需自行處理函數返回值的類型
 func PanicOnErr(fn interface{}, args ...interface{}) []interface{} {
 	// 將傳入的函數轉換為反射對象
 	fnValue := reflect.ValueOf(fn)
