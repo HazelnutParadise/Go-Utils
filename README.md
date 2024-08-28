@@ -327,6 +327,52 @@
       - `map[K]V`：移除後的 `map`。
       - `error`：如果操作過程中出現錯誤，返回錯誤信息。
 
+### timeutil
+
+`timeutil` 包提供了一組與時間處理相關的實用函數，簡化了常見時間操作的實現。
+
+**功能：**
+
+1. **TimeInZone(offsetHours int) time.Time**  
+   接受一個 UTC 偏移值，返回該時區的當下時間。  
+   - **參數：** `offsetHours` - UTC 偏移值，以小時為單位（例如 +8 表示 UTC+8）。
+   - **返回值：**  
+     - `time.Time`：返回對應時區的當下時間。
+
+2. **NowFormatted(format string, timezoneOffset ...int) string**  
+   根據指定格式返回當前時間的字串表示，預設使用 UTC+0。  
+   - **參數：**  
+     - `format` - 時間格式的字串（例如 `FormatDateOnly`、`FormatDateTime` 等）。  
+     - `timezoneOffset` - （可選）時區偏移值，預設為 UTC+0。  
+   - **返回值：**  
+     - `string`：返回格式化後的當前時間字串。
+
+3. **FormatTime(t time.Time, format string) string**  
+   格式化指定的時間，返回指定格式的字串。  
+   - **參數：**  
+     - `t` - 要格式化的 `time.Time` 對象。  
+     - `format` - 時間格式的字串。  
+   - **返回值：**  
+     - `string`：返回格式化後的時間字串。
+
+4. **DaysBetween(startDate, endDate time.Time) int**  
+   計算兩個日期之間的天數，忽略時間部分。  
+   - **參數：**  
+     - `startDate` - 起始日期的 `time.Time` 對象。  
+     - `endDate` - 結束日期的 `time.Time` 對象。  
+   - **返回值：**  
+     - `int`：返回兩個日期之間的天數。
+
+**常用時間格式：**
+
+- `FormatDateOnly`: `"2006-01-02"` - 只顯示日期。
+- `FormatTimeOnly`: `"15:04:05"` - 只顯示時間。
+- `FormatDateTime`: `"2006-01-02 15:04:05"` - 顯示日期和時間。
+- `FormatISO8601`: `"2006-01-02T15:04:05Z07:00"` - ISO8601 格式。
+- `FormatISO8601Compact`: `"20060102T150405Z0700"` - 緊湊版的 ISO8601 格式。
+- `FormatRFC1123`: RFC1123 格式。
+- `FormatRFC822`: RFC822 格式。
+
 ## 安裝
 
 您可以使用以下命令來安裝 `Go-Utils`：
