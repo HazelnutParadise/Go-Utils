@@ -90,6 +90,17 @@
    - **返回值：**
      - `float32`：四捨五入後的數值。
 
+3. **SplitFloat(value T, mode ...SplitFloatMode) (interface{}, interface{})**  
+   根據指定模式將任何數字類型的變數（包括 `int`、`float32`、`float64` 等）分成整數部分和小數部分。  
+   - **參數：**  
+     - `value` - 任何數字類型的變數，泛型 `T` 可以是 `int`、`float32`、`float64` 等。
+     - `mode` - 可選參數，指定返回結果的模式。若不指定模式，預設為 `SplitFloat_IntFloat`。傳入多個模式會觸發 `panic` 錯誤。
+   - **返回值：**  
+     - `interface{}`：返回兩個值，類型由選擇的模式決定：
+       - **`SplitFloat_IntFloat`**: 返回 `int` 和 `float64`。
+       - **`SplitFloat_IntInt`**: 返回 `int` 和 `int`，小數部分放大後取整。
+       - **`SplitFloat_FloatFloat`**: 返回 `float64` 和 `float64`。
+
 ### sliceutil
 
 `sliceutil` 專注於處理和操作切片數據結構。提供了針對數字切片和通用切片的多種實用函數。
