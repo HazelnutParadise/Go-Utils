@@ -49,3 +49,16 @@ func LoadJSONFileAndExtractSubMap(filePath string, keys ...string) (map[string]i
 	}
 	return currentMap, nil
 }
+
+func LoadJSONFileToStruct(filePath string, result interface{}) error {
+	file, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(file, result); err != nil {
+		return err
+	}
+
+	return nil
+}

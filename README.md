@@ -72,6 +72,12 @@
      - `map[string]interface{}`：提取的子字典結構。
      - `error`：如果提取失敗，返回錯誤信息。
 
+3. **LoadJSONFileToStruct(filePath string, result interface{}) error**
+   讀取 JSON 文件並將其解析為傳入的 Go 結構。適用於已經定義好的結構體。
+   - **參數：** `filePath` - JSON 文件的路徑；`result` - 解析結果的 Go 結構體，需要提前定義好結構體來匹配 JSON 文件中的數據結構。
+   - **返回值：**
+     - `error` - 如果讀取或解析過程中出現錯誤，將返回錯誤信息。
+
 ### mathutil
 
 `mathutil` 提供了與數學運算相關的實用函數，例如適用於浮點數的四捨五入處理。
