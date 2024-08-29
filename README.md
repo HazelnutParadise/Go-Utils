@@ -413,6 +413,13 @@
 - `FormatRFC1123`: RFC1123 格式。
 - `FormatRFC822`: RFC822 格式。
 
+10. **UnixAfterSeconds(seconds int) int64**  
+   根據當前時間計算指定秒數後的 Unix 時間戳，如果秒數為負，則計算指定秒數前的 Unix 時間戳。
+   - **參數：** 
+     - `seconds` - 指定的秒數，可以是正、零或負數。
+   - **返回值：** 
+     - `int64` - 指定秒數後或前的 Unix 時間戳。 
+
 ## 安裝
 
 您可以使用以下命令來安裝 `Go-Utils`：
