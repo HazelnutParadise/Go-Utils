@@ -126,3 +126,37 @@ func Flatten[T any](input interface{}) ([]T, error) {
 
 	return result, nil
 }
+
+// PopFrom 函數，移除並返回切片中的最後一個元素
+func PopFrom[T any](slice []T) (T, []T, error) {
+	if len(slice) == 0 {
+		var zero T
+		return zero, slice, errors.New("slice is empty")
+	}
+
+	// 取出最後一個元素
+	lastElement := slice[len(slice)-1]
+
+	// 移除最後一個元素後的切片
+	newSlice := slice[:len(slice)-1]
+
+	return lastElement, newSlice, nil
+}
+
+// Drt_PopFrom 直接從切片中移除並返回最後一個元素，
+// 這個函數會修改原切片！
+func Drt_PopFrom[T any](slice *[]T) (T, error) {
+	if len(*slice) == 0 {
+		var zeroValue T
+		return zeroValue, errors.New("cannot pop from an empty slice")
+	}
+
+	// 取得最後一個元素
+	lastIndex := len(*slice) - 1
+	elem := (*slice)[lastIndex]
+
+	// 移除最後一個元素
+	*slice = (*slice)[:lastIndex]
+
+	return elem, nil
+}
