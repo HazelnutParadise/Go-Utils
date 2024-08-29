@@ -107,3 +107,10 @@ func YearsDiff(startDate, endDate time.Time) int {
 
 	return yearDiff
 }
+
+// UnixAfterSeconds 函數，接受一個秒數值，返回當前時間加上該秒數後的 Unix 時間戳
+// 接受 0 和負值，如果是負值，則表示計算幾秒前的 Unix 時間戳
+func UnixAfterSeconds(seconds int) int64 {
+	futureTime := time.Now().Add(time.Duration(seconds) * time.Second)
+	return futureTime.Unix()
+}
