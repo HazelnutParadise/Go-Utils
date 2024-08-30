@@ -54,36 +54,47 @@ func Async(fn interface{}, args ...interface{}) *Awaitable {
 	return NewAwaitable(fn, args...)
 }
 
-// ParallelProcess 接受一個 map，其中鍵是要平行處理的函數，值是該函數的參數切片。
-// 函數會平行執行所有的函數並返回結果。
-func ParallelProcess(tasks map[interface{}][]interface{}) map[interface{}][]interface{} {
-	results := make(map[interface{}][]interface{})
-	var wg sync.WaitGroup
-	mu := sync.Mutex{}
+// Task 結構體，包含要執行的函數、其對應的參數和標識符
+type Task struct {
+	ID   string        // 任務的標識符
+	Fn   interface{}   // 要執行的函數
+	Args []interface{} // 函數的參數切片
+}
 
-	for fn, args := range tasks {
+// TaskResult 結構體，包含每個任務的結果和標識符
+type TaskResult struct {
+	ID      string        // 任務的標識符
+	Results []interface{} // 函數返回的結果
+}
+
+// ParallelProcess 接受一個 Task 切片，平行執行所有的函數並返回結果。
+func ParallelProcess(tasks []Task) []TaskResult {
+	results := make([]TaskResult, len(tasks))
+	var wg sync.WaitGroup
+
+	for i, task := range tasks {
 		wg.Add(1)
-		go func(fn interface{}, args []interface{}) {
+		go func(i int, task Task) {
 			defer wg.Done()
-			fnValue := reflect.ValueOf(fn)
-			in := make([]reflect.Value, len(args))
-			for i, arg := range args {
-				in[i] = reflect.ValueOf(arg)
+			fnValue := reflect.ValueOf(task.Fn)
+			in := make([]reflect.Value, len(task.Args))
+			for j, arg := range task.Args {
+				in[j] = reflect.ValueOf(arg)
 			}
 
 			out := fnValue.Call(in)
 
 			// 轉換結果為 interface{} 切片
 			result := make([]interface{}, len(out))
-			for i, val := range out {
-				result[i] = val.Interface()
+			for j, val := range out {
+				result[j] = val.Interface()
 			}
 
-			// 使用鎖來保護 results map
-			mu.Lock()
-			results[fn] = result
-			mu.Unlock()
-		}(fn, args)
+			results[i] = TaskResult{
+				ID:      task.ID,
+				Results: result,
+			}
+		}(i, task)
 	}
 
 	wg.Wait()
