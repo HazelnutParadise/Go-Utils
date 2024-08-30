@@ -2,6 +2,7 @@ package asyncutil
 
 import (
 	"reflect"
+	"sync"
 )
 
 // Awaitable 表示一個可以等待的結果
@@ -51,4 +52,40 @@ func (a *Awaitable) Await() ([]interface{}, error) {
 // Async 創建一個異步操作，並返回 Awaitable
 func Async(fn interface{}, args ...interface{}) *Awaitable {
 	return NewAwaitable(fn, args...)
+}
+
+// ParallelProcess 接受一個 map，其中鍵是要平行處理的函數，值是該函數的參數切片。
+// 函數會平行執行所有的函數並返回結果。
+func ParallelProcess(tasks map[interface{}][]interface{}) map[interface{}][]interface{} {
+	results := make(map[interface{}][]interface{})
+	var wg sync.WaitGroup
+	mu := sync.Mutex{}
+
+	for fn, args := range tasks {
+		wg.Add(1)
+		go func(fn interface{}, args []interface{}) {
+			defer wg.Done()
+			fnValue := reflect.ValueOf(fn)
+			in := make([]reflect.Value, len(args))
+			for i, arg := range args {
+				in[i] = reflect.ValueOf(arg)
+			}
+
+			out := fnValue.Call(in)
+
+			// 轉換結果為 interface{} 切片
+			result := make([]interface{}, len(out))
+			for i, val := range out {
+				result[i] = val.Interface()
+			}
+
+			// 使用鎖來保護 results map
+			mu.Lock()
+			results[fn] = result
+			mu.Unlock()
+		}(fn, args)
+	}
+
+	wg.Wait()
+	return results
 }

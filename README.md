@@ -101,6 +101,13 @@
    - **返回值：**
      - `*Awaitable`：返回一個 `Awaitable` 對象，用於表示異步操作的結果。
 
+5. **ParallelProcess(tasks map[interface{}][]interface{}) map[interface{}][]interface{}**
+  - `ParallelProcess` 接受一個 map，該 map 的鍵是要平行處理的函數，值是這些函數的參數切片。它會平行執行所有的函數並返回結果，結果會存儲在一個 map 中，這個 map 的鍵與傳入的鍵對應，值是對應函數的返回值切片。
+- **參數：**  
+  - `tasks map[interface{}][]interface{}`：一個包含函數及其參數的 map。
+- **返回值：**  
+  - `map[interface{}][]interface{}`：一個包含所有函數返回結果的 map，鍵是函數，值是函數的返回結果切片。
+
 #### 使用範例
 
 ```go
