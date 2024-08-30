@@ -66,6 +66,82 @@
    - **返回值：**  
      - `[]interface{}`：返回函數 `fn` 的所有非 `error` 返回值，包在一個切片裡。
 
+### asyncutil
+
+`asyncutil` 是一個提供異步操作功能的工具包，旨在簡化 Go 語言中異步操作的實現，並模擬類似於其他語言中 `async/await` 的行為。這個工具包使得開發者可以方便地在 Go 中進行並發編程，而不需要手動處理通道或等待組。
+
+#### 功能
+
+1. **Awaitable**
+   - `Awaitable` 是一個表示可等待結果的結構體，提供異步操作的支持。
+   - **結構體成員：**
+     - `results []interface{}`：存儲異步操作返回的結果。
+     - `err error`：存儲異步操作中可能發生的錯誤。
+     - `done chan struct{}`：用於標記異步操作完成的通道。
+
+2. <strong>NewAwaitable(fn interface{}, args ...interface{}) *Awaitable</strong>
+   - `NewAwaitable` 函數創建並返回一個新的 `Awaitable`，用於表示異步操作。
+   - **參數：**
+     - `fn` - 需要異步執行的函數。
+     - `args` - 傳遞給 `fn` 函數的參數。
+   - **返回值：**
+     - `*Awaitable`：返回一個 `Awaitable` 對象，表示異步操作的結果。
+
+3. **Await() ([]interface{}, error)**
+   - `Await` 方法等待異步操作完成，並返回結果切片和錯誤信息。
+   - **返回值：**
+     - `[]interface{}`：異步操作的結果切片，不包括 `error` 類型的返回值。
+     - `error`：如果異步操作中出現錯誤，則返回該錯誤；否則返回 `nil`。
+
+4. <strong>Async(fn interface{}, args ...interface{}) *Awaitable</strong>
+   - `Async` 函數用於創建一個異步操作，並返回一個 `Awaitable`，可以在後續通過 `Await` 方法獲取結果。
+   - **參數：**
+     - `fn` - 需要異步執行的函數。
+     - `args` - 傳遞給 `fn` 函數的參數。
+   - **返回值：**
+     - `*Awaitable`：返回一個 `Awaitable` 對象，用於表示異步操作的結果。
+
+#### 使用範例
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+	"github.com/HazelnutParadise/Go-Utils/asyncutil"
+)
+
+func main() {
+	// 定義一個異步操作
+	task := asyncutil.Async(func(a int, b int) (int, string, error) {
+		time.Sleep(2 * time.Second) // 模擬長時間的操作
+		return a + b, "成功", nil
+	}, 10, 20)
+
+	// 執行其他代碼
+	fmt.Println("做其他事情")
+
+	// 等待異步操作完成並獲取結果
+	results, err := task.Await()
+
+	// 處理錯誤
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	// 處理結果
+	for i, result := range results {
+		fmt.Printf("Result %d: %v\n", i+1, result)
+	}
+
+	fmt.Println("Operation succeeded")
+}
+```
+
+這個範例展示了如何使用 `asyncutil` 來執行一個異步操作，並等待其結果。在 `main` 函數中，我們首先創建一個異步操作，然後執行其他代碼。最後，我們等待異步操作完成並處理結果。
+
 ### jsonutil
 
 `jsonutil` 專門用於處理 JSON 文件。它提供了讀取 JSON 文件並解析為 `map[string]interface{}` 的功能，以及根據指定鍵路徑提取子 `map` 的功能。適合用於讀取 `config.json` 設定檔。
