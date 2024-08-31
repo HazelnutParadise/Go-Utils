@@ -2,6 +2,7 @@ package asyncutil
 
 import (
 	"reflect"
+	"runtime"
 	"sync"
 )
 
@@ -98,5 +99,140 @@ func ParallelProcess(tasks []Task) []TaskResult {
 	}
 
 	wg.Wait()
+	return results
+}
+
+// getDefaultGoroutines 取得預設的線程數
+func getDefaultGoroutines() int {
+	numCPU := runtime.NumCPU()
+	if numCPU > 0 {
+		return numCPU
+	}
+	return 1 // 如果無法取得 CPU 核心數量，預設使用 1 個線程
+}
+
+// ParallelFor 用於平行處理 for 迴圈，支援切片和 map
+func ParallelFor[T any](data interface{}, task func(T) interface{}, numGoroutines ...int) []interface{} {
+	value := reflect.ValueOf(data)
+	kind := value.Kind()
+
+	// 確認是否是支援的類型
+	if kind != reflect.Slice && kind != reflect.Map {
+		panic("ParallelFor: unsupported data type, must be slice or map")
+	}
+
+	// 檢查是否有多個線程數參數
+	if len(numGoroutines) > 1 {
+		panic("ParallelFor: only one goroutine count can be specified")
+	}
+
+	// 取得預設的線程數
+	goroutines := getDefaultGoroutines()
+	if len(numGoroutines) == 1 {
+		goroutines = numGoroutines[0]
+	}
+
+	length := value.Len()
+	results := make([]interface{}, length)
+
+	// 決定每個線程處理的數據量
+	chunkSize := length / goroutines
+	if length%goroutines != 0 {
+		chunkSize++
+	}
+
+	var wg sync.WaitGroup
+
+	if kind == reflect.Slice {
+		for i := 0; i < goroutines; i++ {
+			wg.Add(1)
+			go func(i int) {
+				defer wg.Done()
+				begin := i * chunkSize
+				finish := begin + chunkSize
+				if finish > length {
+					finish = length
+				}
+				for j := begin; j < finish; j++ {
+					results[j] = task(value.Index(j).Interface().(T))
+				}
+			}(i)
+		}
+	} else if kind == reflect.Map {
+		keys := value.MapKeys()
+		for i := 0; i < goroutines; i++ {
+			wg.Add(1)
+			go func(i int) {
+				defer wg.Done()
+				begin := i * chunkSize
+				finish := begin + chunkSize
+				if finish > length {
+					finish = length
+				}
+				for j := begin; j < finish; j++ {
+					k := keys[j].Interface().(T)
+					results[j] = task(k)
+				}
+			}(i)
+		}
+	}
+
+	wg.Wait()
+
+	return results
+}
+
+// ParallelForEach 用於平行處理 for range 迴圈，支援切片和 map
+func ParallelForEach(data interface{}, task interface{}, numGoroutines ...int) []interface{} {
+	dataValue := reflect.ValueOf(data)
+	taskValue := reflect.ValueOf(task)
+
+	dataKind := dataValue.Kind()
+	if dataKind != reflect.Slice && dataKind != reflect.Map {
+		panic("ParallelForEach: data must be a slice or map")
+	}
+
+	if len(numGoroutines) > 1 {
+		panic("ParallelForEach: only one goroutine count can be specified")
+	}
+
+	goroutines := getDefaultGoroutines()
+	if len(numGoroutines) == 1 {
+		goroutines = numGoroutines[0]
+	}
+
+	length := dataValue.Len()
+	results := make([]interface{}, length)
+
+	chunkSize := length / goroutines
+	if length%goroutines != 0 {
+		chunkSize++
+	}
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < goroutines; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			begin := i * chunkSize
+			finish := begin + chunkSize
+			if finish > length {
+				finish = length
+			}
+			for j := begin; j < finish; j++ {
+				var result reflect.Value
+				if dataKind == reflect.Slice {
+					result = taskValue.Call([]reflect.Value{reflect.ValueOf(j), dataValue.Index(j)})[0]
+				} else if dataKind == reflect.Map {
+					key := dataValue.MapKeys()[j]
+					result = taskValue.Call([]reflect.Value{key, dataValue.MapIndex(key)})[0]
+				}
+				results[j] = result.Interface()
+			}
+		}(i)
+	}
+	wg.Wait()
+
 	return results
 }

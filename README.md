@@ -102,11 +102,30 @@
      - `*Awaitable`：返回一個 `Awaitable` 對象，用於表示異步操作的結果。
 
 5. **ParallelProcess(tasks []Task) []TaskResult**
-  `ParallelProcess` 接受一個 `Task` 結構體切片，該結構體包含要平行處理的函數及其參數，並為每個任務提供一個標識符。函數會平行執行所有的任務，並返回包含標識符和結果的切片。
-- **參數：**  
-  - `tasks []Task`：一個包含要執行的函數、參數和標識符的 `Task` 結構體切片。
-- **返回值：**  
-  - `[]TaskResult`：一個包含所有函數返回結果的切片。每個結果與其對應的任務標識符一起返回。
+   - `ParallelProcess` 接受一個 `Task` 結構體切片，該結構體包含要平行處理的函數及其參數，並為每個任務提供一個標識符。函數會平行執行所有的任務，並返回包含標識符和結果的切片。
+   - **參數：**  
+     - `tasks []Task`：一個包含要執行的函數、參數和標識符的 `Task` 結構體切片。
+   - **返回值：**  
+     - `[]TaskResult`：一個包含所有函數返回結果的切片。每個結果與其對應的任務標識符一起返回。
+
+6. **ParallelFor(start, end int, task func(int) interface{}, numGoroutines ...int) []interface{}**
+   - 用於平行處理 for 迴圈。根據給定的範圍 [start, end) 和任務函數 task，將迴圈中的每次迭代並行執行。可以選擇指定要使用的線程數，否則將默認使用 CPU 的核心數。
+ - **參數：**
+   - `start` - 迴圈的起始值（包括）。
+   - `end` - 迴圈的結束值（不包括）。
+   - `task` - 每次迭代要執行的函數，接受一個 int 作為參數，並返回 interface{} 作為結果。
+   - `numGoroutines` - （可選）指定要使用的線程數，預設為 CPU 核心數。
+ - **返回值：**
+   - `[]interface{}`：每次迭代 task 函數返回的結果切片，按迭代順序排列。
+
+7. **ParallelForEach[T any, K comparable](data interface{}, task func(K, T) interface{}, numGoroutines ...int) []interface{}**
+   - 用於平行處理 for range 迴圈，支持處理 slice 和 map。將每個 slice 元素或 map 的 key-value 對並行傳遞給任務函數 task 進行處理。可以選擇指定要使用的線程數，否則將默認使用 CPU 的核心數。
+ - **參數：**
+   - `data` - 要遍歷的 slice 或 map。
+   - `task` - 每次迭代要執行的函數，接受一個 K（鍵或索引）和一個 T 類型的值作為參數，並返回 interface{} 作為結果。
+   - `numGoroutines` - （可選）指定要使用的線程數，預設為 CPU 核心數。
+ - **返回值：**
+   - `[]interface{}`：每次迭代 task 函數返回的結果切片，按原 slice 元素順序或 map 鍵順序排列。
 
 #### Task 結構體
 
