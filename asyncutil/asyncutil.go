@@ -137,14 +137,12 @@ func ParallelFor[T any](data interface{}, task func(T) interface{}, numGoroutine
 	results := make([]interface{}, length)
 
 	// 決定每個線程處理的數據量
-	chunkSize := length / goroutines
-	if length%goroutines != 0 {
-		chunkSize++
-	}
+	chunkSize := (length + goroutines - 1) / goroutines
 
 	var wg sync.WaitGroup
 
-	if kind == reflect.Slice {
+	switch kind {
+	case reflect.Slice:
 		for i := 0; i < goroutines; i++ {
 			wg.Add(1)
 			go func(i int) {
@@ -159,7 +157,7 @@ func ParallelFor[T any](data interface{}, task func(T) interface{}, numGoroutine
 				}
 			}(i)
 		}
-	} else if kind == reflect.Map {
+	case reflect.Map:
 		keys := value.MapKeys()
 		for i := 0; i < goroutines; i++ {
 			wg.Add(1)
@@ -232,10 +230,11 @@ func ParallelForEach(data interface{}, task interface{}, numGoroutines ...int) [
 			for j := begin; j < finish; j++ {
 				var result reflect.Value
 				if dataKind == reflect.Slice {
-					result = taskValue.Call([]reflect.Value{reflect.ValueOf(j), dataValue.Index(j)})[0]
+					result = taskValue.Call([]reflect.Value{dataValue.Index(j)})[0]
 				} else if dataKind == reflect.Map {
 					key := dataValue.MapKeys()[j]
-					result = taskValue.Call([]reflect.Value{key, dataValue.MapIndex(key)})[0]
+					value := dataValue.MapIndex(key)
+					result = taskValue.Call([]reflect.Value{key, value})[0]
 				}
 
 				mu.Lock()
