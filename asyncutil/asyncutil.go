@@ -230,11 +230,10 @@ func ParallelForEach(data interface{}, task interface{}, numGoroutines ...int) [
 			for j := begin; j < finish; j++ {
 				var result reflect.Value
 				if dataKind == reflect.Slice {
-					result = taskValue.Call([]reflect.Value{dataValue.Index(j)})[0]
+					result = taskValue.Call([]reflect.Value{reflect.ValueOf(j), dataValue.Index(j)})[0]
 				} else if dataKind == reflect.Map {
 					key := dataValue.MapKeys()[j]
-					value := dataValue.MapIndex(key)
-					result = taskValue.Call([]reflect.Value{key, value})[0]
+					result = taskValue.Call([]reflect.Value{key, dataValue.MapIndex(key)})[0]
 				}
 
 				mu.Lock()
