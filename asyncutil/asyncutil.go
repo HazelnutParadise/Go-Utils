@@ -1,6 +1,7 @@
 package asyncutil
 
 import (
+	"fmt"
 	"reflect"
 	"runtime"
 	"sync"
@@ -210,16 +211,24 @@ func ParallelForEach(data interface{}, task interface{}, numGoroutines ...int) [
 	}
 
 	var wg sync.WaitGroup
+	mu := &sync.Mutex{}
 
 	for i := 0; i < goroutines; i++ {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
+			defer func() {
+				if r := recover(); r != nil {
+					fmt.Println("Recovered from panic:", r)
+				}
+			}()
+
 			begin := i * chunkSize
 			finish := begin + chunkSize
 			if finish > length {
 				finish = length
 			}
+
 			for j := begin; j < finish; j++ {
 				var result reflect.Value
 				if dataKind == reflect.Slice {
@@ -228,7 +237,10 @@ func ParallelForEach(data interface{}, task interface{}, numGoroutines ...int) [
 					key := dataValue.MapKeys()[j]
 					result = taskValue.Call([]reflect.Value{key, dataValue.MapIndex(key)})[0]
 				}
+
+				mu.Lock()
 				results[j] = result.Interface()
+				mu.Unlock()
 			}
 		}(i)
 	}
