@@ -3,6 +3,7 @@ package sliceutil
 
 import (
 	"errors"
+	"reflect"
 )
 
 // Unique 函數，去除切片中的重複元素，適用於所有類型
@@ -109,19 +110,29 @@ func RemoveAll[T comparable](slice []T, targets ...T) []T {
 func Flatten[T any](input interface{}) ([]T, error) {
 	var result []T
 
-	switch v := input.(type) {
-	case []interface{}:
-		for _, item := range v {
-			flattened, err := Flatten[T](item)
+	// 使用反射來處理未知類型的嵌套結構
+	value := reflect.ValueOf(input)
+	if value.Kind() != reflect.Slice {
+		return nil, errors.New("input is not a slice")
+	}
+
+	for i := 0; i < value.Len(); i++ {
+		elem := value.Index(i).Interface()
+
+		elemValue := reflect.ValueOf(elem)
+		if elemValue.Kind() == reflect.Slice {
+			flattened, err := Flatten[T](elem)
 			if err != nil {
 				return nil, err
 			}
 			result = append(result, flattened...)
+		} else {
+			if v, ok := elem.(T); ok {
+				result = append(result, v)
+			} else {
+				return nil, errors.New("element type does not match the target type")
+			}
 		}
-	case T:
-		result = append(result, v)
-	default:
-		return nil, errors.New("unexpected type encountered")
 	}
 
 	return result, nil
