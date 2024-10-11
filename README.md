@@ -339,14 +339,35 @@ func main() {
     - **返回值：**
       - `[]T`：移除後的切片。
 
-14. **Flatten(input interface{}) ([]T, error)**  
+14. **Replace(slice []T, target T, replacement T) ([]T, error)**  
+    替換切片中所有匹配目標的元素。  
+    - **參數：** `slice` - 一個可比較類型的切片；`target` - 要替換的目標值；`replacement` - 替換的新值。
+    - **返回值：**
+      - `[]T`：替換後的切片。
+      - `error`：如果替換過程中出現錯誤，返回錯誤信息。
+
+15. **ReplaceAt(slice []T, index int, replacement T) ([]T, error)**  
+    替換切片中指定索引處的元素。  
+    - **參數：** `slice` - 一個任意類型的切片；`index` - 要替換的位置；`replacement` - 替換的新值。
+    - **返回值：**
+      - `[]T`：替換後的切片。
+      - `error`：如果索引無效，返回錯誤信息。
+
+16. **ReplaceWithSlice(slice []T, startIndex int, endIndex int, replacement []T) ([]T, error)**  
+    替換切片中指定範圍的元素。  
+    - **參數：** `slice` - 一個任意類型的切片；`startIndex` - 開始位置；`endIndex` - 結束位置；`replacement` - 替換的新值。
+    - **返回值：**
+      - `[]T`：替換後的切片。
+      - `error`：如果索引無效，返回錯誤信息。
+
+17. **Flatten(input interface{}) ([]T, error)**  
     將多層嵌套的切片展平成單層切片。  
     - **參數：** `input` - 可能包含多層嵌套的任意類型切片。
     - **返回值：**
       - `[]T`：展平後的單層切片。
       - `error`：如果遇到無法處理的類型，返回錯誤信息。
 
-15. **PopFrom(slice []T) (T, []T, error)**  
+18. **PopFrom(slice []T) (T, []T, error)**  
    從切片中移除並返回最後一個元素，同時返回更新後的新切片。這個函數不會修改原切片，符合設計原則。  
    - **參數：**  
      - `slice` - 一個任意類型的切片，該切片將不被直接修改。
@@ -355,7 +376,7 @@ func main() {
      - `[]T`：更新後的新切片。
      - `error`：如果切片為空，返回錯誤信息。
 
-16. <i>**Drt_PopFrom(slice *[]T) (T, error)**</i>  
+19. <i>**Drt_PopFrom(slice *[]T) (T, error)**</i>  
    直接從切片中移除並返回最後一個元素。這個函數會修改原切片，因此違反了設計原則中的不修改原數據結構的原則，故使用 `Drt_` 前綴標示。  
    - **參數：**  
      - `slice` - 一個指向任意類型切片的指標，該切片將被直接修改。

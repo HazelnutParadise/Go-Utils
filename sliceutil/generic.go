@@ -106,6 +106,49 @@ func RemoveAll[T comparable](slice []T, targets ...T) []T {
 	return newSlice
 }
 
+// Replace 函數，將切片中所有等於 target 的元素替換為 replacement
+func Replace[T comparable](slice []T, target T, replacement T) []T {
+	for i, v := range slice {
+		if v == target {
+			slice[i] = replacement
+		}
+	}
+	return slice
+}
+
+// ReplaceAt 函數，將切片中指定索引處的元素替換為 replacement
+func ReplaceAt[T any](slice []T, index int, replacement T) ([]T, error) {
+	if index < 0 {
+		index += len(slice)
+	}
+	if index < 0 || index >= len(slice) {
+		return slice, errors.New("index out of bounds")
+	}
+	slice[index] = replacement
+	return slice, nil
+}
+
+// ReplaceWithSlice 函數，將切片中指定範圍的元素替換為另一個切片
+func ReplaceWithSlice[T any](slice []T, startIndex int, endIndex int, replacement []T) ([]T, error) {
+	if startIndex < 0 {
+		startIndex += len(slice)
+	}
+	if endIndex < 0 {
+		endIndex += len(slice)
+	}
+	if startIndex < 0 || startIndex >= len(slice) || endIndex < 0 || endIndex > len(slice) {
+		return slice, errors.New("index out of bounds")
+	}
+
+	if startIndex > endIndex {
+		return slice, errors.New("start index is greater than end index")
+	}
+
+	slice = append(slice[:startIndex], append(replacement, slice[endIndex+1:]...)...)
+
+	return slice, nil
+}
+
 // Flatten 函數，將多層嵌套的切片展平成單層切片
 func Flatten[T any](input interface{}) ([]T, error) {
 	var result []T
