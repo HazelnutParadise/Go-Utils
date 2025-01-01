@@ -587,6 +587,45 @@ func main() {
 - `FormatRFC1123`: RFC1123 格式。
 - `FormatRFC822`: RFC822 格式。
 
+### hashutil
+
+`hashutil` 使用 argon2id 算法來生成安全的雜湊值，並提供了比較雜湊值和字串的函數。
+
+**功能：**
+
+1. **func Hash(text string, config ...HashConfig) (hashedBase64 string, saltBase64 string, err error)**
+   使用 argon2 算法對密碼進行安全雜湊。  
+   - **參數：**  
+     - `text` - 要雜湊的原始字串。  
+     - `config` - 可選的配置參數，使用 `HashConfig` 結構體。如果未提供配置，將使用預設值。
+   - **返回值：**
+     - `hashedBase64` - 雜湊後的密文，以 Base64 編碼的字串。
+     - `saltBase64` - 生成的隨機鹽值，以 Base64 編碼的字串。
+     - `err` - 如果生成過程中出現錯誤，返回錯誤信息。
+
+2. **CompareHash(textToCompare, hashedBase64, saltBase64 string, hashConfig ...HashConfig) bool**
+    比較原始字串和雜湊值是否匹配。  
+    - **參數：**  
+      - `textToCompare` - 要比較的原始字串。  
+      - `hashedBase64` - 雜湊後的密文，以 Base64 編碼的字串。  
+      - `saltBase64` - 生成的隨機鹽值，以 Base64 編碼的字串。  
+      - `hashConfig` - 可選的配置參數，使用 `HashConfig` 結構體。如果未提供配置，將使用預設值。
+    - **返回值：**
+      - `bool` - 如果匹配，返回 `true`；否則返回 `false`。
+
+**`HashConfig` 結構體：**
+
+```go
+type HashConfig struct {
+	Memory     uint32 // 記憶體使用量，以 KB 為單位，預設值為 64 * 1024
+	Iterations uint32 // 迭代次數，預設值為 3
+	Threads    uint8  // 使用的執行緒數，預設值為 4
+	CustomSalt []byte // 自訂鹽值，若未指定，則會自動生成
+	SaltLength uint32 // 鹽值長度，當 CustomSalt 不為空時無效，預設值為 16
+	KeyLength  uint32 // 雜湊後的字串長度，預設值為 32
+}
+```
+
 ## 安裝
 
 您可以使用以下命令來安裝 `Go-Utils`：
