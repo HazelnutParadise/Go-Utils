@@ -9,13 +9,13 @@ import (
 
 // Awaitable 表示一個可以等待的結果
 type Awaitable struct {
-	results []interface{}
+	results []any
 	err     error
 	done    chan struct{}
 }
 
 // NewAwaitable 創建一個新的 Awaitable
-func NewAwaitable(fn interface{}, args ...interface{}) *Awaitable {
+func NewAwaitable(fn any, args ...any) *Awaitable {
 	a := &Awaitable{
 		done: make(chan struct{}),
 	}
@@ -29,7 +29,7 @@ func NewAwaitable(fn interface{}, args ...interface{}) *Awaitable {
 
 		out := fnValue.Call(in)
 
-		a.results = make([]interface{}, 0, len(out))
+		a.results = make([]any, 0, len(out))
 		for _, val := range out {
 			// 檢查是否是 error 類型
 			if err, ok := val.Interface().(error); ok {
@@ -46,27 +46,27 @@ func NewAwaitable(fn interface{}, args ...interface{}) *Awaitable {
 }
 
 // Await 等待結果，返回結果切片和 error
-func (a *Awaitable) Await() ([]interface{}, error) {
+func (a *Awaitable) Await() ([]any, error) {
 	<-a.done
 	return a.results, a.err
 }
 
 // Async 創建一個異步操作，並返回 Awaitable
-func Async(fn interface{}, args ...interface{}) *Awaitable {
+func Async(fn any, args ...any) *Awaitable {
 	return NewAwaitable(fn, args...)
 }
 
 // Task 結構體，包含要執行的函數、其對應的參數和標識符
 type Task struct {
-	ID   string        // 任務的標識符
-	Fn   interface{}   // 要執行的函數
-	Args []interface{} // 函數的參數切片
+	ID   string // 任務的標識符
+	Fn   any    // 要執行的函數
+	Args []any  // 函數的參數切片
 }
 
 // TaskResult 結構體，包含每個任務的結果和標識符
 type TaskResult struct {
-	ID      string        // 任務的標識符
-	Results []interface{} // 函數返回的結果
+	ID      string // 任務的標識符
+	Results []any  // 函數返回的結果
 }
 
 // ParallelProcess 接受一個 Task 切片，平行執行所有的函數並返回結果。
@@ -86,8 +86,8 @@ func ParallelProcess(tasks []Task) []TaskResult {
 
 			out := fnValue.Call(in)
 
-			// 轉換結果為 interface{} 切片
-			result := make([]interface{}, len(out))
+			// 轉換結果為 any 切片
+			result := make([]any, len(out))
 			for j, val := range out {
 				result[j] = val.Interface()
 			}
@@ -112,14 +112,11 @@ func getDefaultGoroutines() int {
 	return 1 // 如果無法取得 CPU 核心數量，預設使用 1 個線程
 }
 
-// ParallelFor 用於平行處理 for 迴圈，支援切片和 map
-func ParallelFor[T any](data interface{}, task func(T) interface{}, numGoroutines ...int) []interface{} {
-	value := reflect.ValueOf(data)
-	kind := value.Kind()
-
-	// 確認是否是支援的類型
-	if kind != reflect.Slice && kind != reflect.Map {
-		panic("ParallelFor: unsupported data type, must be slice or map")
+// ParallelFor 用於平行處理指定範圍內的數值
+func ParallelFor(start, end int, task func(int) any, numGoroutines ...int) []any {
+	// 檢查範圍是否有效
+	if start > end {
+		panic("ParallelFor: start cannot be greater than end")
 	}
 
 	// 檢查是否有多個線程數參數
@@ -133,47 +130,27 @@ func ParallelFor[T any](data interface{}, task func(T) interface{}, numGoroutine
 		goroutines = numGoroutines[0]
 	}
 
-	length := value.Len()
-	results := make([]interface{}, length)
+	length := end - start
+	results := make([]any, length)
 
 	// 決定每個線程處理的數據量
 	chunkSize := (length + goroutines - 1) / goroutines
 
 	var wg sync.WaitGroup
 
-	switch kind {
-	case reflect.Slice:
-		for i := 0; i < goroutines; i++ {
-			wg.Add(1)
-			go func(i int) {
-				defer wg.Done()
-				begin := i * chunkSize
-				finish := begin + chunkSize
-				if finish > length {
-					finish = length
-				}
-				for j := begin; j < finish; j++ {
-					results[j] = task(value.Index(j).Interface().(T))
-				}
-			}(i)
-		}
-	case reflect.Map:
-		keys := value.MapKeys()
-		for i := 0; i < goroutines; i++ {
-			wg.Add(1)
-			go func(i int) {
-				defer wg.Done()
-				begin := i * chunkSize
-				finish := begin + chunkSize
-				if finish > length {
-					finish = length
-				}
-				for j := begin; j < finish; j++ {
-					k := keys[j].Interface().(T)
-					results[j] = task(k)
-				}
-			}(i)
-		}
+	for i := 0; i < goroutines; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			begin := i*chunkSize + start
+			finish := begin + chunkSize
+			if finish > end {
+				finish = end
+			}
+			for j := begin; j < finish; j++ {
+				results[j-start] = task(j)
+			}
+		}(i)
 	}
 
 	wg.Wait()
@@ -182,7 +159,7 @@ func ParallelFor[T any](data interface{}, task func(T) interface{}, numGoroutine
 }
 
 // ParallelForEach 用於平行處理 for range 迴圈，支援切片和 map
-func ParallelForEach(data interface{}, task interface{}, numGoroutines ...int) []interface{} {
+func ParallelForEach(data any, task any, numGoroutines ...int) []any {
 	dataValue := reflect.ValueOf(data)
 	taskValue := reflect.ValueOf(task)
 
@@ -201,7 +178,7 @@ func ParallelForEach(data interface{}, task interface{}, numGoroutines ...int) [
 	}
 
 	length := dataValue.Len()
-	results := make([]interface{}, length)
+	results := make([]any, length)
 
 	chunkSize := length / goroutines
 	if length%goroutines != 0 {
