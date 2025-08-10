@@ -126,17 +126,7 @@ func ParseBool(value interface{}) bool {
 	case bool:
 		return v
 	case string:
-		trimmed := strings.TrimSpace(strings.ToLower(v))
-		if trimmed == "true" || trimmed == "1" || trimmed == "yes" || trimmed == "on" {
-			return true
-		} else if trimmed == "" || trimmed == "false" || trimmed == "0" || trimmed == "no" || trimmed == "off" {
-			return false
-		}
-		num, err := strconv.ParseFloat(trimmed, 64)
-		if err == nil {
-			return num != 0
-		}
-		panic(fmt.Sprintf("ParseBool: cannot convert string to bool: %s", v))
+		return v != ""
 	case int, int8, int16, int32, int64:
 		return v != 0
 	case uint, uint8, uint16, uint32, uint64:
