@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 )
 
-// LoadJSONFileToMap 讀取 JSON 文件並將其解析為 map[string]interface{}
-func LoadJSONFileToMap(filePath string) (map[string]interface{}, error) {
+// LoadJSONFileToMap 讀取 JSON 文件並將其解析為 map[string]any
+func LoadJSONFileToMap(filePath string) (map[string]any, error) {
 	absPath, err := filepath.Abs(filePath)
 	if err != nil {
 		return nil, err
@@ -19,7 +19,7 @@ func LoadJSONFileToMap(filePath string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.Unmarshal(file, &data); err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func LoadJSONFileToMap(filePath string) (map[string]interface{}, error) {
 }
 
 // LoadJSONFileAndExtractSubMap 讀取 JSON 文件，並根據鍵路徑返回對應的子 map
-func LoadJSONFileAndExtractSubMap(filePath string, keys ...string) (map[string]interface{}, error) {
+func LoadJSONFileAndExtractSubMap(filePath string, keys ...string) (map[string]any, error) {
 	data, err := LoadJSONFileToMap(filePath)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func LoadJSONFileAndExtractSubMap(filePath string, keys ...string) (map[string]i
 	for _, key := range keys {
 		if val, exists := currentMap[key]; exists {
 			switch v := val.(type) {
-			case map[string]interface{}:
+			case map[string]any:
 				currentMap = v
 			default:
 				return nil, errors.New("the key '" + key + "' does not point to a map")
@@ -50,7 +50,7 @@ func LoadJSONFileAndExtractSubMap(filePath string, keys ...string) (map[string]i
 	return currentMap, nil
 }
 
-func LoadJSONFileToStruct(filePath string, result interface{}) error {
+func LoadJSONFileToStruct(filePath string, result any) error {
 	file, err := os.ReadFile(filePath)
 	if err != nil {
 		return err

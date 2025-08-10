@@ -20,25 +20,25 @@
 
 **功能：**
 
-1. **ParseF64(value interface{}) float64**  
+1. **ParseF64(value any) float64**  
    將任意資料轉換為 `float64`，如果轉換失敗，則會 `panic`。  
    - **參數：** `value` - 任意可轉換為 `float64` 的資料。
    - **返回值：**
      - `float64`：轉換後的 `float64` 值。
 
-2. **ParseF32(value interface{}) float32**  
+2. **ParseF32(value any) float32**  
    將任意資料轉換為 `float32`，如果轉換失敗，則會 `panic`。  
    - **參數：** `value` - 任意可轉換為 `float32` 的資料。
    - **返回值：**
      - `float32`：轉換後的 `float32` 值。
 
-3. **ParseInt(value interface{}) int**  
+3. **ParseInt(value any) int**  
    將任意資料轉換為 `int`，如果轉換失敗，則會 `panic`。  
    - **參數：** `value` - 任意可轉換為 `int` 的資料。
    - **返回值：**
      - `int`：轉換後的 `int` 值。
 
-4. **ParseBool(value interface{}) bool**  
+4. **ParseBool(value any) bool**  
    將任意資料轉換為 `bool`，如果轉換失敗，則會 `panic`。  
    - **參數：** `value` - 任意可轉換為 `bool` 的資料。可以接受的值包括：
      - 字串，非空字串轉換為 `true`，空字串轉換為 `false`。
@@ -46,7 +46,7 @@
    - **返回值：**
      - `bool`：轉換後的 `bool` 值。
 
-5. **ToString(value interface{}) string**  
+5. **ToString(value any) string**  
    將任意資料轉換為字串，使用 `fmt.Sprintf` 進行格式化，錯誤時直接 `panic`。  
    - **參數：** `value` - 任意可轉換為字串的資料。
    - **返回值：**
@@ -58,13 +58,13 @@
 
 **功能：**
 
-1. **PanicOnErr(fn interface{}, args ...interface{}) []interface{}**  
+1. **PanicOnErr(fn any, args ...any) []any**  
    調用任意函數並自動處理返回的錯誤。如果該函數返回 `error`，且該 `error` 不為 `nil`，則 `PanicOnErr` 會觸發 `panic`，否則返回該函數的其他返回值。  
    - **參數：**  
      - `fn` - 需要調用的任意函數。
      - `args` - 傳遞給 `fn` 的參數列表。
    - **返回值：**  
-     - `[]interface{}`：返回函數 `fn` 的所有非 `error` 返回值，包在一個切片裡。
+     - `[]any`：返回函數 `fn` 的所有非 `error` 返回值，包在一個切片裡。
 
 ### asyncutil
 
@@ -75,11 +75,11 @@
 1. **Awaitable**
    - `Awaitable` 是一個表示可等待結果的結構體，提供異步操作的支持。
    - **結構體成員：**
-     - `results []interface{}`：存儲異步操作返回的結果。
+     - `results []any`：存儲異步操作返回的結果。
      - `err error`：存儲異步操作中可能發生的錯誤。
      - `done chan struct{}`：用於標記異步操作完成的通道。
 
-2. <strong>NewAwaitable(fn interface{}, args ...interface{}) *Awaitable</strong>
+2. <strong>NewAwaitable(fn any, args ...any) *Awaitable</strong>
    - `NewAwaitable` 函數創建並返回一個新的 `Awaitable`，用於表示異步操作。
    - **參數：**
      - `fn` - 需要異步執行的函數。
@@ -87,13 +87,13 @@
    - **返回值：**
      - `*Awaitable`：返回一個 `Awaitable` 對象，表示異步操作的結果。
 
-3. **Await() ([]interface{}, error)**
+3. **Await() ([]any, error)**
    - `Await` 方法等待異步操作完成，並返回結果切片和錯誤信息。
    - **返回值：**
-     - `[]interface{}`：異步操作的結果切片，不包括 `error` 類型的返回值。
+     - `[]any`：異步操作的結果切片，不包括 `error` 類型的返回值。
      - `error`：如果異步操作中出現錯誤，則返回該錯誤；否則返回 `nil`。
 
-4. <strong>Async(fn interface{}, args ...interface{}) *Awaitable</strong>
+4. <strong>Async(fn any, args ...any) *Awaitable</strong>
    - `Async` 函數用於創建一個異步操作，並返回一個 `Awaitable`，可以在後續通過 `Await` 方法獲取結果。
    - **參數：**
      - `fn` - 需要異步執行的函數。
@@ -108,24 +108,24 @@
    - **返回值：**  
      - `[]TaskResult`：一個包含所有函數返回結果的切片。每個結果與其對應的任務標識符一起返回。
 
-6. **ParallelFor(start, end int, task func(int) interface{}, numGoroutines ...int) []interface{}**
+6. **ParallelFor(start, end int, task func(int) any, numGoroutines ...int) []any**
    - 用於平行處理 for 迴圈。根據給定的範圍 [start, end) 和任務函數 task，將迴圈中的每次迭代並行執行。可以選擇指定要使用的線程數，否則將默認使用 CPU 的核心數。
  - **參數：**
    - `start` - 迴圈的起始值（包括）。
    - `end` - 迴圈的結束值（不包括）。
-   - `task` - 每次迭代要執行的函數，接受一個 int 作為參數，並返回 interface{} 作為結果。
+   - `task` - 每次迭代要執行的函數，接受一個 int 作為參數，並返回 any 作為結果。
    - `numGoroutines` - （可選）指定要使用的線程數，預設為 CPU 核心數。
  - **返回值：**
-   - `[]interface{}`：每次迭代 task 函數返回的結果切片，按迭代順序排列。
+   - `[]any`：每次迭代 task 函數返回的結果切片，按迭代順序排列。
 
-7. **ParallelForEach[T any, K comparable](data interface{}, task func(K, T) interface{}, numGoroutines ...int) []interface{}**
+7. **ParallelForEach[T any, K comparable](data any, task func(K, T) any, numGoroutines ...int) []any**
    - 用於平行處理 for range 迴圈，支持處理 slice 和 map。將每個 slice 元素或 map 的 key-value 對並行傳遞給任務函數 task 進行處理。可以選擇指定要使用的線程數，否則將默認使用 CPU 的核心數。
  - **參數：**
    - `data` - 要遍歷的 slice 或 map。
-   - `task` - 每次迭代要執行的函數，接受一個 K（鍵或索引）和一個 T 類型的值作為參數，並返回 interface{} 作為結果。
+   - `task` - 每次迭代要執行的函數，接受一個 K（鍵或索引）和一個 T 類型的值作為參數，並返回 any 作為結果。
    - `numGoroutines` - （可選）指定要使用的線程數，預設為 CPU 核心數。
  - **返回值：**
-   - `[]interface{}`：每次迭代 task 函數返回的結果切片，按原 slice 元素順序或 map 鍵順序排列。
+   - `[]any`：每次迭代 task 函數返回的結果切片，按原 slice 元素順序或 map 鍵順序排列。
 
 #### Task 結構體
 
@@ -133,8 +133,8 @@
 
 - **屬性：**
   - `ID string`：任務的標識符，用來區分不同的任務。可以是任意字串。
-  - `Fn interface{}`：要執行的函數。這個函數可以接受任意數量和類型的參數。
-  - `Args []interface{}`：函數的參數切片，包含執行函數時所需的所有參數。
+  - `Fn any`：要執行的函數。這個函數可以接受任意數量和類型的參數。
+  - `Args []any`：函數的參數切片，包含執行函數時所需的所有參數。
 
 #### TaskResult 結構體
 
@@ -142,7 +142,7 @@
 
 - **屬性：**
   - `ID string`：對應 `Task` 中的標識符，表示這個結果來自哪個任務。
-  - `Results []interface{}`：函數返回的結果切片，包含了該任務執行後的所有返回值。
+  - `Results []any`：函數返回的結果切片，包含了該任務執行後的所有返回值。
 
 #### 用途示例
 
@@ -197,25 +197,25 @@ func main() {
 
 ### jsonutil
 
-`jsonutil` 專門用於處理 JSON 文件。它提供了讀取 JSON 文件並解析為 `map[string]interface{}` 的功能，以及根據指定鍵路徑提取子 `map` 的功能。適合用於讀取 `config.json` 設定檔。
+`jsonutil` 專門用於處理 JSON 文件。它提供了讀取 JSON 文件並解析為 `map[string]any` 的功能，以及根據指定鍵路徑提取子 `map` 的功能。適合用於讀取 `config.json` 設定檔。
 
 **功能：**
 
-1. **LoadJSONFileToMap(filename string) (map[string]interface{}, error)**  
-   將 JSON 文件加載為 `map[string]interface{}`。  
+1. **LoadJSONFileToMap(filename string) (map[string]any, error)**  
+   將 JSON 文件加載為 `map[string]any`。  
    - **參數：** `filename` - 要加載的 JSON 文件路徑。
    - **返回值：**
-     - `map[string]interface{}`：解析後的字典結構。
+     - `map[string]any`：解析後的字典結構。
      - `error`：如果加載或解析失敗，返回錯誤信息。
 
-2. **LoadJSONFileAndExtractSubMap(filename string, path ...string) (map[string]interface{}, error)**  
+2. **LoadJSONFileAndExtractSubMap(filename string, path ...string) (map[string]any, error)**  
    根據鍵路徑提取 JSON 文件中的子 `map`。  
    - **參數：** `filename` - 要加載的 JSON 文件路徑；`path` - 鍵路徑。
    - **返回值：**
-     - `map[string]interface{}`：提取的子字典結構。
+     - `map[string]any`：提取的子字典結構。
      - `error`：如果提取失敗，返回錯誤信息。
 
-3. **LoadJSONFileToStruct(filePath string, result interface{}) error**
+3. **LoadJSONFileToStruct(filePath string, result any) error**
    讀取 JSON 文件並將其解析為傳入的 Go 結構。適用於已經定義好的結構體。
    - **參數：** `filePath` - JSON 文件的路徑；`result` - 解析結果的 Go 結構體，需要提前定義好結構體來匹配 JSON 文件中的數據結構。
    - **返回值：**
@@ -239,13 +239,13 @@ func main() {
    - **返回值：**
      - `float32`：四捨五入後的數值。
 
-3. **SplitFloat(value T, mode ...SplitFloatMode) (interface{}, interface{})**  
+3. **SplitFloat(value T, mode ...SplitFloatMode) (any, any)**  
    根據指定模式將任何數字類型的變數（包括 `int`、`float32`、`float64` 等）分成整數部分和小數部分。  
    - **參數：**  
      - `value` - 任何數字類型的變數，泛型 `T` 可以是 `int`、`float32`、`float64` 等。
      - `mode` - 可選參數，指定返回結果的模式。若不指定模式，預設為 `SplitFloat_IntFloat`。傳入多個模式會觸發 `panic` 錯誤。
    - **返回值：**  
-     - `interface{}`：返回兩個值，類型由選擇的模式決定：
+     - `any`：返回兩個值，類型由選擇的模式決定：
        - **`SplitFloat_IntFloat`**: 返回 `int` 和 `float64`。
        - **`SplitFloat_IntInt`**: 返回 `int` 和 `int`，小數部分放大後取整。
        - **`SplitFloat_FloatFloat`**: 返回 `float64` 和 `float64`。
@@ -360,7 +360,7 @@ func main() {
       - `[]T`：替換後的切片。
       - `error`：如果索引無效，返回錯誤信息。
 
-17. **Flatten(input interface{}) ([]T, error)**  
+17. **Flatten(input any) ([]T, error)**  
     將多層嵌套的切片展平成單層切片。  
     - **參數：** `input` - 可能包含多層嵌套的任意類型切片。
     - **返回值：**
@@ -438,7 +438,7 @@ func main() {
    - **返回值：**
      - `map[K]V`：篩選後的 `map`。
 
-7. **Merge(m1, m2 map[K]V, opts ...interface{}) (map[K]V, error)**  
+7. **Merge(m1, m2 map[K]V, opts ...any) (map[K]V, error)**  
    合併兩個 `map`，在鍵衝突時根據指定的策略處理。當不傳入策略時，默認使用 `MergeDefault` 策略。  
    - **參數：** `m1` - 第一個 `map`；`m2` - 第二個 `map`；`opts` - 可選的合併策略或自訂的 resolver 函數。
    - **返回值：**

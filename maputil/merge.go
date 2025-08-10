@@ -19,7 +19,7 @@ const (
 
 // Merge 函數，合併兩個 map，在鍵衝突時根據指定的策略處理
 // 當不傳入策略時，默認使用 MergeDefault 策略
-func Merge[K comparable, V any](m1, m2 map[K]V, opts ...interface{}) (map[K]V, error) {
+func Merge[K comparable, V any](m1, m2 map[K]V, opts ...any) (map[K]V, error) {
 	merged := make(map[K]V, len(m1)+len(m2))
 
 	// 設定默認策略為 MergeDefault

@@ -150,7 +150,7 @@ func ReplaceWithSlice[T any](slice []T, startIndex int, endIndex int, replacemen
 }
 
 // Flatten 函數，將多層嵌套的切片展平成單層切片
-func Flatten[T any](input interface{}) ([]T, error) {
+func Flatten[T any](input any) ([]T, error) {
 	var result []T
 
 	// 使用反射來處理未知類型的嵌套結構

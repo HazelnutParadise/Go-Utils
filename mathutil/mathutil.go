@@ -17,7 +17,7 @@ const (
 )
 
 // SplitFloat 函數，根據指定模式將浮點數分成整數部分和小數部分
-func SplitFloat[T types.Numeric](value T, mode ...SplitFloatMode) (interface{}, interface{}) {
+func SplitFloat[T types.Numeric](value T, mode ...SplitFloatMode) (any, any) {
 	selectedMode := SplitFloat_IntFloat // 設置預設模式為 SplitFloat_IntFloat
 
 	// 如果傳入了模式參數，則使用該參數

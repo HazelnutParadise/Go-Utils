@@ -7,7 +7,7 @@ import "reflect"
 // args: 要傳遞給函數的參數
 // 返回值: 函數的返回值切片
 // 需自行處理函數返回值的類型
-func PanicOnErr(fn interface{}, args ...interface{}) []interface{} {
+func PanicOnErr(fn any, args ...any) []any {
 	// 將傳入的函數轉換為反射對象
 	fnValue := reflect.ValueOf(fn)
 
@@ -21,7 +21,7 @@ func PanicOnErr(fn interface{}, args ...interface{}) []interface{} {
 	out := fnValue.Call(in)
 
 	// 遍歷所有返回值
-	var results []interface{}
+	var results []any
 	for _, val := range out {
 		if val.Type().Implements(reflect.TypeOf((*error)(nil)).Elem()) {
 			if !val.IsNil() {

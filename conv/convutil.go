@@ -7,7 +7,7 @@ import (
 )
 
 // ParseF64 將任意資料轉換為 float64，錯誤時直接 panic
-func ParseF64(value interface{}) float64 {
+func ParseF64(value any) float64 {
 	// 自動斷言
 	vNew, ok := value.(float64)
 	if ok {
@@ -52,7 +52,7 @@ func ParseF64(value interface{}) float64 {
 }
 
 // ParseF32 將任意資料轉換為 float32，錯誤時直接 panic
-func ParseF32(value interface{}) float32 {
+func ParseF32(value any) float32 {
 	// 自動斷言
 	vNew, ok := value.(float32)
 	if ok {
@@ -63,7 +63,7 @@ func ParseF32(value interface{}) float32 {
 }
 
 // ParseInt 將任意資料轉換為 int，錯誤時直接 panic
-func ParseInt(value interface{}) int {
+func ParseInt(value any) int {
 	// 自動斷言
 	vNew, ok := value.(int)
 	if ok {
@@ -115,7 +115,7 @@ func ParseInt(value interface{}) int {
 }
 
 // ParseBool 將任意資料轉換為 bool，錯誤時直接 panic
-func ParseBool(value interface{}) bool {
+func ParseBool(value any) bool {
 	// 自動斷言
 	vNew, ok := value.(bool)
 	if ok {
@@ -141,7 +141,7 @@ func ParseBool(value interface{}) bool {
 }
 
 // ToString 將任意資料轉換為字串，錯誤時直接 panic
-func ToString(value interface{}) string {
+func ToString(value any) string {
 	// 自動斷言
 	vNew, ok := value.(string)
 	if ok {
